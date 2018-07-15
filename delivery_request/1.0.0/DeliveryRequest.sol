@@ -17,36 +17,40 @@ contract DeliveryRequest {
     int256 public start;
     int256 public destination;
     bool public completed = false;
-    int public amount;
+    uint public amount;
     uint256 public deadline;
     bytes32 public message;
     address public assigned_to;
-    mapping(address => int) public bids;
+    mapping(address => uint) public bids;
     address[] public bidders;
-    int public request_security = 0.042 ether;
-    int public bid_security = 0.007 ether;
+    uint public request_security = 0.042 ether;
+    uint public bid_security = 0.007 ether;
     
     
     // ------
     
-    function DeliveryRequest(int amt, int256 str, int256 dst, byte32 msg, uint256 deadln) public {
-        require(msg.amount == amt+request_security);
+    function DeliveryRequest(uint256 deadln) public {
         require(now < deadln);
         owner = msg.sender;
-        start = str;
-        destination = dst;
-        completed = false;
-        amount = amt;
         deadline = deadln;
-        message = msg.data;
     }
     
     
     // ------
+
+
+    function start(uint amt, int256 str, int256 dst, bytes32 mssg) public payable {
+        require(msg.value >= amt+request_security);
+        start = str;
+        destination = dst;
+        amount = amt;
+        message = mssg;
+    }
     
     
     function bid() public payable {
         require(now < deadline);
+        require(this.balance >= amount+request_security);
         require(msg.sender != owner);
         require(assigned_to == 0);
         require(!completed);
@@ -58,6 +62,7 @@ contract DeliveryRequest {
 
     function assign(address assignee) public {
         require(msg.sender == owner);
+        require(this.balance >= amount+request_security);
         require(now < deadline);
         require(!completed);
         require(bids[assignee] != 0);
@@ -66,6 +71,7 @@ contract DeliveryRequest {
     
     function mark_complete() public {
         require(msg.sender == owner);
+        require(this.balance >= amount+request_security);
         require(!completed);
         require(assigned_to != 0);
         completed = true;
@@ -75,11 +81,11 @@ contract DeliveryRequest {
 
     function claim() public {
         if(now > deadline) {
-            msg.sender.transfer(bids[message.sender]);
+            msg.sender.transfer(bids[msg.sender]);
         }
         assert(completed);
-        assert(bids[message.sender] != 0);
-        msg.sender.transfer(bids[message.sender]);
+        assert(bids[msg.sender] != 0);
+        msg.sender.transfer(bids[msg.sender]);
     }
 
     
