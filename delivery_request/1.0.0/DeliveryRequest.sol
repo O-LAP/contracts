@@ -29,7 +29,7 @@ contract DeliveryRequest {
     
     // ------
     
-    function DeliveryRequest(uint256 deadln) public {
+    constructor(uint256 deadln) public {
         require(now < deadln);
         owner = msg.sender;
         deadline = deadln;
@@ -50,7 +50,7 @@ contract DeliveryRequest {
     
     function bid() public payable {
         require(now < deadline);
-        require(this.balance >= amount+request_security);
+        require(address(this).balance >= amount+request_security);
         require(msg.sender != owner);
         require(assigned_to == 0);
         require(!completed);
@@ -62,7 +62,7 @@ contract DeliveryRequest {
 
     function assign(address assignee) public {
         require(msg.sender == owner);
-        require(this.balance >= amount+request_security);
+        require(address(this).balance >= amount+request_security);
         require(now < deadline);
         require(!completed);
         require(bids[assignee] != 0);
@@ -71,7 +71,7 @@ contract DeliveryRequest {
     
     function mark_complete() public {
         require(msg.sender == owner);
-        require(this.balance >= amount+request_security);
+        require(address(this).balance >= amount+request_security);
         require(!completed);
         require(assigned_to != 0);
         completed = true;
