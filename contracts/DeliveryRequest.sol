@@ -14,7 +14,7 @@ contract DeliveryRequest {
     
     // ------
     address public owner;
-    int256 public start;
+    int256 public source;
     int256 public destination;
     bool public completed = false;
     uint public amount;
@@ -30,27 +30,27 @@ contract DeliveryRequest {
     // ------
 
 
-    event Deployed(uint256 deadline, int256 start, int256 destination, uint256 amount, bytes32 message);
+    event Deployed(uint256 deadline, int256 src, int256 destination, uint256 amount, bytes32 message);
     event Bid(address bidder);
     event AssignedTo(address assignee);
     event MarkedComplete(uint amount);
     event Claimed(address claimant, uint amount);
     
     function DeliveryRequest(uint256 deadln) public {
-        // require(now < deadln);
+        require(now < deadln);
         owner = msg.sender;
         deadline = deadln;
         completed = false;
-        emit Deployed(deadline, start, destination, amount, mssg);
+        emit Deployed(deadline, source, destination, amount, mssg);
     }
     
     
     // ------
 
 
-    function start(uint amt, int256 str, int256 dst, bytes32 mssg) public payable {
+    function init(uint amt, int256 src, int256 dst, bytes32 mssg) public payable {
         require(msg.value >= amt+request_security);
-        start = str;
+        source = src;
         destination = dst;
         amount = amt;
         message = mssg;
