@@ -28,12 +28,20 @@ contract DeliveryRequest {
     
     
     // ------
+
+
+    event Deployed(uint256 deadline, int256 start, int256 destination, uint256 amount, bytes32 message);
+    event Bid(address bidder);
+    event AssignedTo(address assignee);
+    event MarkedComplete(uint amount);
+    event Claimed(address claimant, uint amount);
     
     function DeliveryRequest(uint256 deadln) public {
         // require(now < deadln);
         owner = msg.sender;
         deadline = deadln;
         completed = false;
+        emit Deployed(deadline, start, destination, amount, mssg);
     }
     
     
@@ -59,6 +67,7 @@ contract DeliveryRequest {
         require(bids[msg.sender] == 0);
         bids[msg.sender] += msg.value;
         bidders.push(msg.sender);
+        emit Bid(msg.sender);
     }
 
     function assign(address assignee) public {
@@ -68,6 +77,7 @@ contract DeliveryRequest {
         require(!completed);
         require(bids[assignee] != 0);
         assigned_to = assignee;
+        emit AssignedTo(assignee);
     }
     
     function mark_complete() public {
@@ -78,17 +88,20 @@ contract DeliveryRequest {
         completed = true;
         bids[assigned_to] += amount;
         msg.sender.transfer(bid_security);
+        emit MarkedComplete(amount);
     }
 
     function claim() public {
         if(now > deadline) {
             msg.sender.transfer(bids[msg.sender]);
+            emit Claimed(msg.sender, bids[msg.sender]);
             return;
         }
         assert(completed);
         assert(bids[msg.sender] != 0);
         assert(this.balance >= bids[msg.sender]);
         msg.sender.transfer(bids[msg.sender]);
+        emit Claimed(msg.sender, bids[msg.sender]);
     }
 
     

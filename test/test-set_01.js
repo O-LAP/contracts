@@ -9,6 +9,7 @@ const utils = require('./libs/utils');
 // owner: 0x597898a2C256561996583d8eFE224b1fa905646b
 // bidder: 0x508a6c0f1c3fcc940d89b74a940518c06ac2c6bf
 
+// 0x5406fab38d7bee8b23f4f8d28b74c323d0029e86
 
 contract('1st DeliveryRequest test', async (accounts) => {
 
