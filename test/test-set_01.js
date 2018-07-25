@@ -27,25 +27,25 @@ contract('1st DeliveryRequest test', async (accounts) => {
 
   it("should start a delivery request", async () => {
   	inst = await DeliveryRequest.new(30000000000, {from: acc0});
-  	tx = await inst.start('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
+  	tx = await inst.init('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
   })
 
   it("should place bids on a request", async () => {
   	inst = await DeliveryRequest.new(30000000000, {from: acc0});
-  	tx = await inst.start('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
+  	tx = await inst.init('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
   	tx = await inst.bid({from: acc1, value: '7000000000000000' });
   })
 
   it("should assign a request", async () => {
   	inst = await DeliveryRequest.new(30000000000, {from: acc0});
-  	tx = await inst.start('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
+  	tx = await inst.init('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
   	tx = await inst.bid({from: acc1, value: '7000000000000000' });
   	tx = await inst.assign(acc1, {from: acc0});
   })
 
   it("should mark a request complete", async () => {
   	inst = await DeliveryRequest.new(30000000000, {from: acc0});
-  	tx = await inst.start('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
+  	tx = await inst.init('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
   	tx = await inst.bid({from: acc1, value: '7000000000000000' });
   	tx = await inst.assign(acc1, {from: acc0});
   	tx = await inst.mark_complete({from: acc0});
@@ -53,7 +53,7 @@ contract('1st DeliveryRequest test', async (accounts) => {
 
   it("should let rider claim", async () => {
   	inst = await DeliveryRequest.new(30000000000, {from: acc0});
-  	tx = await inst.start('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
+  	tx = await inst.init('200000000000000000', 100, 200, "911", {from: acc0, value: amt });
   	tx = await inst.bid({from: acc1, value: '7000000000000000' });
   	tx = await inst.assign(acc1, {from: acc0});
   	tx = await inst.mark_complete({from: acc0});

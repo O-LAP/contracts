@@ -25,12 +25,17 @@ contract DeliveryRequest {
     address[] public bidders;
     uint public request_security = 0.042 ether;
     uint public bid_security = 0.007 ether;
+
+
+    function getBidCount() public constant returns(uint count) {
+        return bidders.length;
+    }
     
     
     // ------
 
 
-    event Deployed(uint256 deadline, int256 src, int256 destination, uint256 amount, bytes32 message);
+    event Init(uint256 deadline, int256 src, int256 destination, uint256 amount, bytes32 message);
     event Bid(address bidder);
     event AssignedTo(address assignee);
     event MarkedComplete(uint amount);
@@ -41,7 +46,6 @@ contract DeliveryRequest {
         owner = msg.sender;
         deadline = deadln;
         completed = false;
-        emit Deployed(deadline, source, destination, amount, mssg);
     }
     
     
@@ -54,6 +58,7 @@ contract DeliveryRequest {
         destination = dst;
         amount = amt;
         message = mssg;
+        emit Init(deadline, source, destination, amount, mssg);
     }
     
     
